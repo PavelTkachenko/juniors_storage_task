@@ -2,6 +2,8 @@ require "rspec"
 require_relative "../src/storage"
 
 describe Storage do
+  subject { Storage.new }
+
   it "prints current stock" do
     expect { subject.stock }.to output(
       <<-EOT.gsub(/^\s+/, '')
