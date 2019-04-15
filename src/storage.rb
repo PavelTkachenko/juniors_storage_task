@@ -1,4 +1,6 @@
 require_relative "./journal_entry"
+require_relative "./pricing_policies/default"
+require_relative "./pricing_policies/winter"
 
 GOODS = {
   "CU" => "Огурцы",
@@ -15,7 +17,15 @@ class Storage
   end
 
   def accept(code, weight)
+    price = accepting_price(code)
+    total_price = price * weight
     @journal_entries << JournalEntry.new(code, weight)
+    puts "#{GOODS[code]} в кол-ве #{weight} кг приняты по #{price} тенге за кг, на общую сумму #{total_price} тенге."
+    stock
+  end
+
+  def accepting_price(code)
+    @pricing_policy.get[code].each { |k, v| break(v) if k.cover?(weight_of(code)) }
   end
 
   def entries_of(code)
